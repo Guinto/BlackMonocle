@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Black Monocle</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="css/index.css" />
+
+<script src="js/jquery-1.8.2.min.js"></script>
+<script src="js/jquery-ui-1.8.23.custom.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/controls.js"></script>
+
+<script type="text/javascript">
+	function load() {
+		var requestAnimationFrame = requestAnimationFrame
+				|| webkitRequestAnimationFrame || mozRequestAnimationFrame
+				|| msRequestAnimationFrame || oRequestAnimationFrame;
+
+		var c = document.getElementById('#board');
+
+		ctx = c.getContext('2d');
+
+		var x = 100;
+
+		ctx.fillStyle = '#f00';
+
+		function loop() {
+			ctx.fillRect(x, 100, 20, 20);
+
+			++x;
+			requestAnimationFrame(loop);
+		}
+		requestAnimationFrame(loop);
+	}
+</script>
+</head>
+<body onload="load();">
+	<div class="content">
+		<div id="header" class="page-header">
+			<h1>Black Monocle</h1>
+		</div>
+		<canvas id="board" width="400" height="400"></canvas>
+	</div>
+
+</body>
+</html>
