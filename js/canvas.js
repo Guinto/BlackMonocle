@@ -1,6 +1,7 @@
 var Canvas = {
 	canvas: null,
-	ctx: null
+	ctx: null,
+	x: 0
 };
 
 Canvas.update = function() {
@@ -8,20 +9,20 @@ Canvas.update = function() {
 };
 
 Canvas.draw = function() {
-	Canvas.ctx.fillRect(x, 100, 20 , 20);
+	Canvas.ctx.fillRect(0, 0, Canvas.x, 20);
 };
 
-Canvas.setup = function(selector) {
-	Canvas.canvas = document.getElementById(selector);
+Canvas.setup = function(idSelector) {
+	Canvas.canvas = document.getElementById(idSelector);
 	Canvas.ctx = Canvas.canvas.getContext("2d");
-	Canvas.x = 100;
+	Canvas.x = 0;
 	
 	Canvas.ctx.fillStyle = "#f00";
 };
 
-Canvas.clear = function(selector) {
+Canvas.clear = function(idSelector) {
 	if (Canvas.canvas == null) {
-		Canvas.canvas = document.getElementById(selector);
+		Canvas.canvas = document.getElementById(idSelector);
 	}
 	if (Canvas.ctx == null) {
 		Canvas.ctx = Canvas.canvas.getContext("2d");
