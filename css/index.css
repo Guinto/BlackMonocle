@@ -1,9 +1,11 @@
-#header h1 {
-	margin: 20px;
+body {
+	margin: 0;
+	padding: 0;
+	background: #000;
 }
 
 canvas {
 	display: block;
-	margin: auto;
-	border: 1px solid #CCC;
+	margin: 0 auto;
+	background: #fff;
 }

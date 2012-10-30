@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <title>Black Monocle</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+	content="width=device-width, 
+    user-scalable=no, initial-scale=1, maximum-scale=1, user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style"
+	content="black-translucent" />
 
 <link rel="stylesheet" href="css/bootstrap.min.css" />
 <link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
@@ -12,38 +18,150 @@
 <script src="js/jquery-1.8.2.min.js"></script>
 <script src="js/jquery-ui-1.8.23.custom.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/canvas.js"></script>
-<script src="js/controls.js"></script>
-
-<script type="text/javascript">
-	//<![CDATA[ 
-	$(function() {
-		var requestAnimationFrame = 
-		    requestAnimationFrame ||
-		    webkitRequestAnimationFrame ||
-		    mozRequestAnimationFrame ||
-		    msRequestAnimationFrame ||
-		    oRequestAnimationFrame;
-
-		Canvas.setup('board');
-
-		function loop() {
-			Canvas.update();
-			Canvas.draw();
-		    requestAnimationFrame(loop);
-		}
-
-		requestAnimationFrame(loop);
-		});//]]>  
-</script>
 </head>
 <body>
-	<div class="content">
-		<div id="header" class="page-header">
-			<h1>Black Monocle</h1>
-		</div>
-		<canvas id="board" width="320" height="480"></canvas>
-	</div>
+	<canvas></canvas>
 
+	<script type="text/javascript">
+		/*$(function() {
+			var requestAnimationFrame = requestAnimationFrame
+					|| webkitRequestAnimationFrame || mozRequestAnimationFrame
+					|| msRequestAnimationFrame || oRequestAnimationFrame;
+
+			function loop() {
+				Canvas.update();
+				Canvas.draw();
+				requestAnimationFrame(loop);
+			}
+
+			requestAnimationFrame(loop);
+		});*/
+		var BMono = {
+			WIDTH : 320,
+			HEIGHT : 480,
+			RATIO : null,
+			currentWidth : null,
+			currentHeight : null,
+			canvas : null,
+			ctx : null,
+
+			init : function() {
+				BMono.RATIO = BMono.WIDTH / BMono.HEIGHT;
+
+				// Changed when screen is resized
+				BMono.currentWidth = BMono.WIDTH;
+				BMono.currentHeight = BMono.HEIGHT;
+
+				BMono.canvas = document.getElementsByTagName('canvas')[0];
+
+				BMono.canvas.width = BMono.WIDTH;
+				BMono.canvas.height = BMono.HEIGHT;
+
+				BMono.ctx = BMono.canvas.getContext('2d');
+
+				BMono.ua = navigator.userAgent.toLowerCase();
+				BMono.android = BMono.ua.indexOf('android') > -1 ? true : false;
+				BMono.ios = (BMono.ua.indexOf('iphone') > -1 || BMono.ua.indexOf('ipad') > -1 ) ? true : false;
+				
+				BMono.resize();
+				
+				BMono.Draw.clear();
+				BMono.Draw.rect(120, 120, 150, 150, 'green');
+				BMono.Draw.text('Hello World', 100, 100, 10, '#100');
+				
+				// Listen for clicks
+				window.addEventListener('click', function(e) {
+					e.preventDefault();
+					BMono.Input.set(e);
+				}, false);
+				
+				// Listen for touches
+				window.addEventListener('touchstart', function(e) {
+					e.preventDefault();
+					// The event has an array name touches
+					// we just want the first one though
+					BMono.Input.set(e.touches[0]);
+				}, false);
+				
+				window.addEventListener('touchmove', function(e) {
+					// So the window doesn't scroll
+					e.preventDefault();
+				});
+				
+				window.addEventListener('touchend', function(e) {
+					// Also to prevent scroll
+					e.preventDefault();
+				});
+			},
+
+			resize : function() {
+				BMono.currentHeight = window.innerHeight;
+				BMono.currentWidth = BMono.currentHeight
+						* BMono.RATIO;
+
+				// This will create some extra space on the page,
+				// allowing us to scroll past the address bar,
+				// thus hiding it.
+				if (BMono.android || BMono.ios) {
+					document.body.style.height = (window.innerHeight + 50)
+							+ 'px';
+				}
+
+				// scaling using css
+				BMono.canvas.style.width = BMono.currentWidth
+						+ 'px';
+				BMono.canvas.style.height = BMono.currentHeight
+						+ 'px';
+
+				// Timeout used because some mobile browsers don't fire
+				// if there is not a short delay
+				window.setTimeout(function() {
+					window.scrollTo(0, 1);
+				}, 1);
+			}
+		};
+		
+		BMono.Draw = {
+			clear: function() {
+				BMono.ctx.clearRect(0, 0, BMono.WIDTH, BMono.HEIGHT);
+			},
+		
+			rect: function(x, y, w, h, color) {
+				BMono.ctx.fillStyle = color;
+				BMono.ctx.fillRect(x, y, w, h);
+			},
+			
+			circle: function(x, y, r, color) {
+				BMono.ctx.fillStyle = color;
+				BMono.ctx.beginPath();	
+				BMono.ctx.arc(x + 5, y + 5, r, 0, Math.PI * 2, true);
+				BMono.ctx.closePath();
+				BMono.ctx.fill();
+			},
+			
+			text: function(string, x, y, size, color) {
+				BMono.ctx.font = 'bold ' + size + 'px Monospace';
+				BMono.ctx.fillStyle = color;
+				BMono.ctx.fillText(string, x, y);
+			}	
+		};
+
+		BMono.Input = {
+			x: 0,
+			y: 0,
+			tapped: false,
+			
+			set: function(data) {
+				this.x = data.pageX;
+				this.y = data.pageY;
+				this.tapped = true;
+				
+				BMono.Draw.circle(this.x, this.y, 10, 'red');
+			}
+		}
+		
+		window.addEventListener('load', BMono.init, false);
+		window.addEventListener('resize', BMono.resize, false);
+	</script>
 </body>
 </html>
